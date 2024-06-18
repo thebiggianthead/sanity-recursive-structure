@@ -28,28 +28,32 @@ export default function parentChild(
         return documentStore.listenQuery(queryId(id), {}, options).pipe(
           distinctUntilChanged(isEqual),
           map((parent) => {
-            console.log(parent.title, children)
             if (children && children.length > 0) {
               return S.list()
+                .id(parent._id)
                 .title(parent.title)
                 .items([
                   S.listItem()
                     .id(parent._id)
                     .title(parent.title)
                     .child(S.document().documentId(parent._id).schemaType(schemaType)),
-
                   S.divider(),
-
                   ...children
                     .filter(({_id}: {_id: string}) => id !== _id)
                     .map((child: any) => {
                       return S.listItem()
                         .id(child._id)
-                        .title(child.title)
+                        .title(child.title || "No title")
                         .showIcon(true)
                         .schemaType(schemaType)
                         .child((_id) => fn(_id, S, fn))
                     }),
+                ])
+                .menuItems([
+                  S.menuItem()
+                    .title('Add child')
+                    .icon(AddIcon)
+                    .intent({ type: 'create', params: [{ type: schemaType, template: 'page-parent' }, {parent: parent._id}]})
                 ])
             } else {
               return S.document().schemaType(schemaType).documentId(id)
@@ -80,7 +84,7 @@ export default function parentChild(
                     .filter('_type == $schemaType')
                     .params({schemaType})
                     .canHandleIntent(
-                      (intentName, params) => intentName === 'edit' && params.type === schemaType,
+                      (intentName, params) => params.type === schemaType,
                     )
                     .child((id) => S.document().documentId(id).schemaType(schemaType)),
                 ),
@@ -89,7 +93,7 @@ export default function parentChild(
               ...parents.map((parent: any) => {
                 return S.listItem()
                   .id(parent._id)
-                  .title(parent.title)
+                  .title(parent.title || "No title")
                   .schemaType(schemaType)
                   .child((id) => getChildrenFn(id, S, getChildrenFn))
               }),

@@ -15,5 +15,25 @@ export default defineConfig({
 
   schema: {
     types: schemaTypes,
+
+    templates: (prev) => {
+      const prevFiltered = prev.filter((template) => template.id !== 'lesson')
+
+      return [
+        ...prevFiltered,
+        {
+          id: 'page-parent',
+          title: 'Page with Parent',
+          schemaType: 'page',
+          parameters: [{name: 'parent', type: 'string'}],
+          value: (params: {parent: string}) => ({
+            parent: {
+              "_ref": params.parent,
+              "_type": "reference"
+            },
+          }),
+        },
+      ]
+    },
   },
 })
