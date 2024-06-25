@@ -5,6 +5,7 @@ This is a Studio with an example of a recursive desk structure, where parent / c
 Caveats:
 
 - Not tested at scale.
+- Performance will be impacted - lists are not optimised and virtualized like default desk lists are.
 - Intent handling is janky - adding new pages in this context jumps to the "master" page list.
 - Custom doc list with parent and children pages removes the doc list search.
 

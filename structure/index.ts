@@ -1,8 +1,8 @@
 import type {StructureResolver} from 'sanity/structure'
 import parentChild from './parentChild'
 
-export const structure: StructureResolver = (S, context) =>
+export const structure: StructureResolver = (S, {documentStore}) =>
   S.list()
     .id('root')
     .title('Content')
-    .items([parentChild('page', S, context.documentStore)])
+    .items([parentChild('page', S, documentStore)])
